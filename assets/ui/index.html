@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIMPipe — Mission Control</title>
+    <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand">NIMPipe <span class="tag">v0.1</span></div>
+        <div class="status" id="proxy-status">Checking…</div>
+    </header>
+
+    <main class="container">
+        <section class="panel hero">
+            <h1>Mission Control</h1>
+            <p>OpenAI-compatible proxy for NVIDIA NIM.</p>
+            <div class="hero-actions">
+                <button id="reload-btn" class="btn primary">Reload Config</button>
+                <button id="test-default-btn" class="btn">Test Default Model</button>
+            </div>
+            <div id="message" class="message hidden"></div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2>Models</h2>
+                <button id="add-model-btn" class="btn small">+ Add</button>
+            </div>
+            <div id="models-grid" class="models-grid"></div>
+        </section>
+
+        <section class="panel">
+            <h2>Registry Editor</h2>
+            <p class="hint">Edit models.toml directly. Save validates the file.</p>
+            <textarea id="registry-editor" class="editor" spellcheck="false"></textarea>
+            <div class="editor-actions">
+                <button id="save-registry-btn" class="btn primary">Save Registry</button>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>Recent Events</h2>
+            <ul id="events-list" class="events-list"></ul>
+        </section>
+    </main>
+
+    <div id="test-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Test Model</h3>
+            <p id="test-model-name" class="mono"></p>
+            <pre id="test-result" class="result-box">Running…</pre>
+            <button id="close-modal-btn" class="btn primary">Close</button>
+        </div>
+    </div>
+
+    <script src="/assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+[[models]]
+openai_id = "kimi-k2.6"
+backend_id = "moonshotai/kimi-k2.6"
+description = "Moonshot Kimi K2.6 base variant"
+max_tokens_cap = 65536
+supports_streaming = true
+supports_tools = true
+
+[[models]]
+openai_id = "kimi-k2.6-thinking"
+backend_id = "moonshotai/kimi-k2.6"
+description = "Moonshot Kimi K2.6 with reasoning enabled"
+max_tokens_cap = 65536
+supports_streaming = true
+supports_tools = true
+
+[models.injected_params]
+"chat_template_kwargs.thinking" = true
+
+[[models]]
+openai_id = "minimax-m3"
+backend_id = "minimaxai/minimax-m3"
+description = "MiniMax M3 base variant"
+max_tokens_cap = 16384
+supports_streaming = true
+supports_tools = true
+
+[[models]]
+openai_id = "minimax-m3-thinking"
+backend_id = "minimaxai/minimax-m3"
+description = "MiniMax M3 with reasoning enabled"
+max_tokens_cap = 16384
+supports_streaming = true
+supports_tools = true
+
+[models.injected_params]
+"chat_template_kwargs.thinking_mode" = "enabled"
+
+[[models]]
+openai_id = "glm-5.1"
+backend_id = "z-ai/glm-5.1"
+description = "Zhipu GLM 5.1"
+max_tokens_cap = 16384
+supports_streaming = true
+supports_tools = true
