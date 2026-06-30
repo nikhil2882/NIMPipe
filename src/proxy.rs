@@ -1,4 +1,5 @@
 use crate::config::TimeoutsConfig;
+use crate::transform_response;
 use anyhow::{Context, Result, anyhow};
 use axum::body::Body;
 use axum::response::Response;
@@ -42,6 +43,12 @@ impl ProxyClient {
         let url = format!("{}/chat/completions", self.base_url);
         debug!("Upstream POST {}", url);
 
+        let model_name = body
+            .get("model")
+            .and_then(|v| v.as_str())
+            .unwrap_or("unknown");
+        let body_size = serde_json::to_string(&body).map(|s| s.len()).unwrap_or(0);
+
         let req = self
             .client
             .post(&url)
@@ -58,16 +65,27 @@ impl ProxyClient {
             .json(&body);
 
         if stream {
+            let upstream_start = std::time::Instant::now();
             let res = req
                 .timeout(Duration::from_secs(self.timeouts.streaming_seconds))
                 .send()
                 .await
-                .context("Failed to contact NVIDIA NIM")?;
+                .map_err(|e| anyhow!("Failed to contact NVIDIA NIM (streaming): {e}"))?;
+
+            let first_byte_ms = upstream_start.elapsed().as_millis();
+            info!(
+                upstream_model = %model_name,
+                upstream_status = %res.status(),
+                upstream_content_type = %res.headers().get("content-type").map(|v| v.to_str().unwrap_or("?")).unwrap_or("none"),
+                upstream_body_bytes = body_size,
+                first_byte_ms = first_byte_ms,
+                "UPSTREAM_STREAM_START"
+            );
 
             if res.status().is_success() {
                 let status = res.status();
-                let stream = res.bytes_stream();
-                let body = Body::from_stream(stream);
+                let source = res.bytes_stream();
+                let body = transform_response::transform_stream(source);
                 return Ok(Response::builder()
                     .status(status)
                     .header("Content-Type", "text/event-stream")
@@ -86,7 +104,7 @@ impl ProxyClient {
             .timeout(Duration::from_secs(self.timeouts.request_seconds))
             .send()
             .await
-            .context("Failed to contact NVIDIA NIM")?;
+            .map_err(|e| anyhow!("Failed to contact NVIDIA NIM (sync): {e}"))?;
 
         let status = res.status();
         if status.is_success() {

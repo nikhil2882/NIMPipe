@@ -5,6 +5,7 @@ mod models;
 mod proxy;
 mod server;
 mod transform;
+mod transform_response;
 
 use anyhow::{Context, Result};
 use clap::Parser;

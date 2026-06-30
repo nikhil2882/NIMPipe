@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::VecDeque;
 use std::sync::{Arc, RwLock};
-use tracing::{error, warn};
+use tracing::{debug, error, info, warn};
 
 static UI_DIR: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/assets/ui");
 
@@ -130,6 +130,9 @@ async fn chat_completions(
     State(state): State<AppState>,
     Json(payload): Json<Value>,
 ) -> impl IntoResponse {
+    let request_id = uuid::Uuid::new_v4().to_string();
+    let start = std::time::Instant::now();
+
     let model_id = payload
         .get("model")
         .and_then(|v| v.as_str())
@@ -141,12 +144,29 @@ async fn chat_completions(
         .and_then(|v| v.as_bool())
         .unwrap_or(false);
 
+    let payload_size = serde_json::to_string(&payload).map(|s| s.len()).unwrap_or(0);
+
+    info!(
+        request_id = %request_id,
+        model = %model_id,
+        stream = %stream,
+        payload_bytes = payload_size,
+        "REQUEST_START"
+    );
+
+    // Log full body ONLY to file (skip stdout by using debug level for big payloads)
+    debug!(
+        request_id = %request_id,
+        body = %serde_json::to_string(&payload).unwrap_or_default(),
+        "INCOMING_BODY"
+    );
+
     let model = {
         let registry = state.registry.read().unwrap();
         match registry.get(&model_id) {
             Some(m) => m.clone(),
             None => {
-                warn!("Unknown model requested: {}", model_id);
+                warn!(request_id = %request_id, model = %model_id, "Unknown model requested");
                 return openai_error(
                     StatusCode::NOT_FOUND,
                     &format!("Model '{}' not found", model_id),
@@ -159,28 +179,63 @@ async fn chat_completions(
         return openai_error(StatusCode::BAD_REQUEST, "Model does not support streaming");
     }
 
+    let transform_start = std::time::Instant::now();
     let upstream_body = match transform_request(payload, &model) {
         Ok(b) => b,
         Err(e) => {
-            error!("Request transformation failed: {}", e);
+            error!(request_id = %request_id, error = %e, "TRANSFORM_ERROR");
             return openai_error(StatusCode::BAD_REQUEST, &e.to_string());
         }
     };
+    let transform_ms = transform_start.elapsed().as_millis();
+
+    info!(
+        request_id = %request_id,
+        backend_model = %model.backend_id,
+        transform_ms = transform_ms,
+        upstream_bytes = serde_json::to_string(&upstream_body).map(|s| s.len()).unwrap_or(0),
+        "TRANSFORMED"
+    );
+
+    debug!(
+        request_id = %request_id,
+        body = %serde_json::to_string(&upstream_body).unwrap_or_default(),
+        "UPSTREAM_BODY"
+    );
 
     log_event(
         &state,
         "INFO",
-        &format!("chat_completion model={} stream={}", model_id, stream),
+        &format!("[{request_id}] chat_completion model={model_id} stream={stream}"),
     );
 
+    let upstream_start = std::time::Instant::now();
     match state
         .proxy
         .chat_completion(upstream_body, stream, model.status_poll_path.as_deref())
         .await
     {
-        Ok(res) => res,
+        Ok(res) => {
+            let upstream_ms = upstream_start.elapsed().as_millis();
+            let total_ms = start.elapsed().as_millis();
+            info!(
+                request_id = %request_id,
+                upstream_ms = upstream_ms,
+                total_ms = total_ms,
+                "REQUEST_COMPLETE"
+            );
+            res
+        }
         Err(e) => {
-            error!("Proxy error: {}", e);
+            let upstream_ms = upstream_start.elapsed().as_millis();
+            let total_ms = start.elapsed().as_millis();
+            error!(
+                request_id = %request_id,
+                error = %e,
+                upstream_ms = upstream_ms,
+                total_ms = total_ms,
+                "PROXY_ERROR"
+            );
             openai_error(StatusCode::BAD_GATEWAY, &e.to_string())
         }
     }

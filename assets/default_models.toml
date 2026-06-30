@@ -21,20 +21,34 @@ supports_tools = true
 openai_id = "minimax-m3"
 backend_id = "minimaxai/minimax-m3"
 description = "MiniMax M3 base variant"
-max_tokens_cap = 16384
+max_tokens_cap = 8192
 supports_streaming = true
 supports_tools = true
+
+[models.default_params]
+temperature = 1.0
+top_p = 0.95
+
+[models.strip_params]
+strip_params = ["stop", "presence_penalty", "frequency_penalty", "logit_bias", "user"]
 
 [[models]]
 openai_id = "minimax-m3-thinking"
 backend_id = "minimaxai/minimax-m3"
 description = "MiniMax M3 with reasoning enabled"
-max_tokens_cap = 16384
+max_tokens_cap = 8192
 supports_streaming = true
 supports_tools = true
 
+[models.default_params]
+temperature = 1.0
+top_p = 0.95
+
 [models.injected_params]
 "chat_template_kwargs.thinking_mode" = "enabled"
+
+[models.strip_params]
+strip_params = ["stop", "presence_penalty", "frequency_penalty", "logit_bias", "user"]
 
 [[models]]
 openai_id = "glm-5.1"
