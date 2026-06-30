@@ -1,0 +1,62 @@
+{
+  "/Users/nikhilsengar/Desktop/code/playground/NIMPipe/assets/ui/app.js": {
+    "mtime": 1782472431.2480314,
+    "ast_hash": "3727f267c72d2d1d58ae3ad6f2a4c00f",
+    "semantic_hash": "3727f267c72d2d1d58ae3ad6f2a4c00f"
+  },
+  "/Users/nikhilsengar/Desktop/code/playground/NIMPipe/src/proxy.rs": {
+    "mtime": 1782808152.1217258,
+    "ast_hash": "e4a72c1d407b845cad77afe1948d9f9c",
+    "semantic_hash": "e4a72c1d407b845cad77afe1948d9f9c"
+  },
+  "/Users/nikhilsengar/Desktop/code/playground/NIMPipe/src/config.rs": {
+    "mtime": 1782472496.8578212,
+    "ast_hash": "281e6e2116e471b6165dedd7eb9142d5",
+    "semantic_hash": "281e6e2116e471b6165dedd7eb9142d5"
+  },
+  "/Users/nikhilsengar/Desktop/code/playground/NIMPipe/src/models.rs": {
+    "mtime": 1782472961.8459034,
+    "ast_hash": "2b94bb2bd3e7e372357289684e8d57f9",
+    "semantic_hash": "2b94bb2bd3e7e372357289684e8d57f9"
+  },
+  "/Users/nikhilsengar/Desktop/code/playground/NIMPipe/src/logging.rs": {
+    "mtime": 1782796289.9424086,
+    "ast_hash": "94bfd64f2dda520989dd549817f2db2b",
+    "semantic_hash": "94bfd64f2dda520989dd549817f2db2b"
+  },
+  "/Users/nikhilsengar/Desktop/code/playground/NIMPipe/src/server.rs": {
+    "mtime": 1782796605.1020632,
+    "ast_hash": "087fe90a97491ffc59bf7f4e707d7e6d",
+    "semantic_hash": "087fe90a97491ffc59bf7f4e707d7e6d"
+  },
+  "/Users/nikhilsengar/Desktop/code/playground/NIMPipe/src/main.rs": {
+    "mtime": 1782794202.8921578,
+    "ast_hash": "ed1178f1b62dcc0dca86c8e6a71deee4",
+    "semantic_hash": "ed1178f1b62dcc0dca86c8e6a71deee4"
+  },
+  "/Users/nikhilsengar/Desktop/code/playground/NIMPipe/src/transform.rs": {
+    "mtime": 1782472961.8500326,
+    "ast_hash": "76a24d6047528d01d627889ca3c5d971",
+    "semantic_hash": "76a24d6047528d01d627889ca3c5d971"
+  },
+  "/Users/nikhilsengar/Desktop/code/playground/NIMPipe/src/transform_response.rs": {
+    "mtime": 1782808152.1219966,
+    "ast_hash": "9c964efb50b16971c8e883ff03301a38",
+    "semantic_hash": "9c964efb50b16971c8e883ff03301a38"
+  },
+  "/Users/nikhilsengar/Desktop/code/playground/NIMPipe/src/cli.rs": {
+    "mtime": 1782472961.844521,
+    "ast_hash": "6498f59456b8f9b5a041f86a1ddb67aa",
+    "semantic_hash": "6498f59456b8f9b5a041f86a1ddb67aa"
+  },
+  "/Users/nikhilsengar/Desktop/code/playground/NIMPipe/README.md": {
+    "mtime": 1782472947.0680661,
+    "ast_hash": "1e3624b811f774a03efb812e3559848c",
+    "semantic_hash": "1e3624b811f774a03efb812e3559848c"
+  },
+  "/Users/nikhilsengar/Desktop/code/playground/NIMPipe/assets/ui/index.html": {
+    "mtime": 1782472371.6799963,
+    "ast_hash": "946703d9313cb9545673c0d7be99fb09",
+    "semantic_hash": "946703d9313cb9545673c0d7be99fb09"
+  }
+}
